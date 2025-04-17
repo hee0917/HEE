@@ -430,7 +430,116 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="_1">에너지 시뮬레이션</h1>
-<h1 id="_2">냉방 부하 계산</h1>
+<h1 id="_2">냉방부하 분석 시스템</h1>
+<!-- 
+Introduction  
+이 페이지는 건물 내 냉방부하(Zone Cooling Load)의 해석과 산정을 위한 분석 방법을 정리한 샘플입니다.  
+냉방부하 계산은 열획득량(Q_source), 열손실량(Q_sink), 그리고 열획득 이용률(η)을 바탕으로 주중/주말/휴무일 등을 구분하여 월별로 계산됩니다.  
+-->
+<hr/>
+<h2 id="_3">분석 구성</h2>
+<ul>
+<li><strong>Zone 기준 냉방부하 산정</strong></li>
+<li><strong>열획득 및 열손실 요소 정의</strong></li>
+<li><strong>주중/주말/휴무일 운용 조건 반영</strong></li>
+<li><strong>이용률 및 유효열 계산</strong></li>
+<li><strong>냉방부하 결과 도출 (월별, 연간)</strong></li>
+</ul>
+<hr/>
+<h2 id="_4">분석 흐름</h2>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1단계</td>
+<td>존 내 열획득(Q_source)과 열손실(Q_sink) 계산</td>
+</tr>
+<tr>
+<td>2단계</td>
+<td>이용률(η) 계산: 획득된 열 중 실제 냉방에 영향을 미친 열 비율</td>
+</tr>
+<tr>
+<td>3단계</td>
+<td>냉방부하(Q_h,c) 산정: <code>Q_h,c = (1 - η) · Q_source</code></td>
+</tr>
+<tr>
+<td>4단계</td>
+<td>주중/주말/휴무일 조건 반영: 운용 시간 및 환기 회수 적용</td>
+</tr>
+<tr>
+<td>5단계</td>
+<td>월간 냉방부하(Q_c,b.mth) 및 연간 누계 계산</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="_5">계산 공식</h2>
+<ul>
+<li>
+<p><strong>냉방부하 계산식</strong><br/>
+<span class="arithmatex">\( Q_{h,c} = (1 - \eta) \cdot Q_{source} \)</span></p>
+</li>
+<li>
+<p><strong>월간 냉방부하 (구분 없음)</strong><br/>
+<span class="arithmatex">\( Q_{c,b.mth} = d_{mth} \cdot Q_{c,b} \)</span></p>
+</li>
+<li>
+<p><strong>월간 냉방부하 (구분 있음)</strong><br/>
+<span class="arithmatex">\( Q_{c,b.mth} = d_{op} \cdot Q_{c,b,op} + d_{we} \cdot Q_{c,b,we} \)</span></p>
+</li>
+<li>
+<p><strong>연간 냉방부하</strong><br/>
+<span class="arithmatex">\( Q_{c,b,a} = \sum_{mth} Q_{c,b.mth} \)</span></p>
+</li>
+<li>
+<p><strong>이용률 (획득열 이용율)</strong><br/>
+<span class="arithmatex">\( \eta = \frac{Q_{source}}{Q_{sink}} \)</span></p>
+</li>
+<li>
+<p><strong>유효이용률 보정계수</strong><br/>
+<span class="arithmatex">\( \eta = \frac{1 - \gamma^a}{1 - \gamma^{a+1}}, \quad \gamma = \frac{Q_{source}}{Q_{sink}} \)</span></p>
+</li>
+</ul>
+<hr/>
+<h2 id="_6">활용 방안</h2>
+<ul>
+<li><strong>건물 에너지 해석</strong>: 월별 냉방에너지 요구량 산정</li>
+<li><strong>설비 용량 계획</strong>: 냉방부하 기준 설비 설계 용량 계산</li>
+<li><strong>운영 시뮬레이션</strong>: 주중/주말 별도 운용 시나리오 비교</li>
+<li><strong>에너지 컨설팅</strong>: 사용 조건 맞춤형 냉방부하 리포트 작성</li>
+</ul>
+<hr/>
+<h2 id="_7">분석 특이사항</h2>
+<ul>
+<li>
+<p><strong>냉방부하는 시스템이 실제로 작동하지 않는 주말/휴무일에는 0으로 설정</strong><br/>
+<span class="arithmatex">\( Q_{c,b,we} = 0 \)</span></p>
+</li>
+<li>
+<p><strong>냉방부하 분석 시 제외 항목</strong>:  </p>
+</li>
+<li>난방용 열</li>
+<li>실외로 방출되는 에너지</li>
+<li>
+<p>태양 복사열 (직접 획득은 Q_source로 포함)</p>
+</li>
+<li>
+<p><strong>열획득 및 손실은 냉방부하/난방부하 기준 별도로 계산 필요</strong></p>
+</li>
+<li>
+<p><strong>외기 환기량 계산 시 실내온도가 외기보다 높은 경우만 고려</strong><br/>
+<span class="arithmatex">\( v_i &gt; v_e \)</span> 조건 만족 필요</p>
+</li>
+</ul>
+<hr/>
+<blockquote>
+<p>참고: 본 내용은 건물 에너지 해석 보고서의 4.3~4.4절을 기반으로 작성된 예시입니다.</p>
+</blockquote>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
